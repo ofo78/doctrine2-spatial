@@ -117,6 +117,11 @@ class PostgreSql extends AbstractPlatform
      */
     public function convertToDatabaseValue(AbstractSpatialType $type, GeometryInterface $value)
     {
+        // Compatibilty with empty Geometry
+        if (strlen($value) === 2) {
+            return sprintf('%s EMPTY', $value->getType());
+        }
+        
         $sridSQL = null;
 
         if ($type instanceof GeographyType && null === $value->getSrid()) {
